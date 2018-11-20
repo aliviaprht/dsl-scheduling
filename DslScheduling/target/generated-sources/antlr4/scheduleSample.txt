@@ -1,0 +1,17 @@
+[
+	Room:[
+		7602 -> capacity : 100; facility: board, screen, projector;
+		7609 -> capacity : 80; facility: board;
+	]
+	Lecture:[
+		Adi -> course: IF4150, IF2450; available: (day 1, hour 7-11), (day 3, hour 14-18);
+		yudistira -> course: IF4150; available: (day 2, hour 7-10);
+	]
+	Class:[
+		IF4150 -> student: 45; duration: 2; require: board, screen, projector;
+		IF2450 -> student: 90; duration: 1; require: board;
+	]
+	Preference:[
+		x
+	]
+]

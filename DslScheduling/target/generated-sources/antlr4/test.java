@@ -1,18 +1,18 @@
 import java.util.Arrays;
 
 public class test {
-	Room[] rooms;
-	Lecture[] lectures;
-	Preference[] preferences;
-	Constraint[] constraints;
-	Schedule[] schedules;
+	static Room[] rooms = new Room[0];
+	static Lecture[] lectures = new Lecture[0];
+	static Preference[] preferences = new Preference[0];
+	static Constraint[] constraints = new Constraint[0];
+	static Schedule[] schedules = new Schedule[0];
 	
-	public int getPreferenceIndex(String codeClass) {
+	public static int getPreferenceIndex(String codeClass) {
 		int i;
 		
 		if (preferences.length > 0) {
 			i = 0;
-			while ((codeClass != preferences[i].getCodeClass()) && (i<preferences.length)) {
+			while ((i<preferences.length) && (codeClass != preferences[i].getCodeClass())) {
 				i++;
 			}
 			
@@ -27,12 +27,12 @@ public class test {
 		}
 	}
 	
-	public int getConstaintIndex(String lecturerName) {
+	public static int getConstraintIndex(String lecturerName) {
 		int i;
 		
 		if (constraints.length > 0) {
 			i = 0;
-			while ((lecturerName != constraints[i].getLecturerName()) && (i<constraints.length)) {
+			while ((i<constraints.length) && (lecturerName != constraints[i].getLecturerName())) {
 				i++;
 			}
 			
@@ -47,7 +47,7 @@ public class test {
 		}
 	}
 	
-	public int getRoomsIndex(int capacity, String[] required, int startIdx) {
+	public static int getRoomsIndex(int capacity, String[] required, int startIdx) {
 		int i;
 		boolean found = false;
 		
@@ -76,7 +76,7 @@ public class test {
 		}
 	}
 	
-	public int countAvailableLecture() {
+	public static int countAvailableLecture() {
 		int count = 0;
 		
 		for(int i = 0; i<lectures.length; i++) {
@@ -84,11 +84,10 @@ public class test {
 				count++;
 			}
 		}
-		
 		return count;
 	}
 	
-	public int[] getIndexAvailableLecture() {
+	public static int[] getIndexAvailableLecture() {
 		int[] index = new int[countAvailableLecture()];
 		int j = 0;
 		
@@ -102,7 +101,7 @@ public class test {
 		return index;
 	}
 	
-	public TimeDetail getTimeIntersec(TimeDetail timeA,TimeDetail timeB, int duration) {
+	public static TimeDetail getTimeIntersec(TimeDetail timeA,TimeDetail timeB, int duration) {
 		TimeDetail time_intersec = new TimeDetail();
 		int bigStart = 0;
 		int smallEnd = 0;
@@ -124,23 +123,54 @@ public class test {
 				time_intersec.setDay(timeA.getDay());
 				time_intersec.setStartHour(bigStart);
 				time_intersec.setFinishHour(smallEnd);
+			} else {
+				
 			}
 		}
 		
 		return time_intersec;
 	}
 	
-	public TimeDetail[] copyArrayOfTimeDetail(TimeDetail[] arrayInput) {
-		TimeDetail[] arrayOutput = new TimeDetail[arrayInput.length];
-		for (int i=0; i<arrayInput.length; i++) {
-			arrayOutput[i] = arrayInput[i];
+	public static boolean isTimeOverlap(TimeDetail timeA, TimeDetail timeB) {
+		boolean isOverlap = false;
+		
+		if (timeA.getDay() == timeB.getDay()) {
+			TimeDetail time_intersec = new TimeDetail();
+			time_intersec = getTimeIntersec(timeA,timeB,1);
+			if (time_intersec.getDay() == 0) {
+				isOverlap = true;
+			}
 		}
 		
-		return arrayOutput;
+		
+		return isOverlap;
+	}
+	
+	public static boolean isValidSchedule(int room, TimeDetail time, int index_schedule) {
+		boolean isValid = true;
+		int i = 0;
+		
+		if (index_schedule == 0) {
+			isValid = true;
+		} else {
+			while(isValid && i < index_schedule) {
+				if (schedules[i].getRoomNo() == room) {
+					if (isTimeOverlap(schedules[i].getTime(),time)) {
+						isValid = false;
+					} else {
+						i++;
+					}
+				} else {
+					i++; 
+				}
+			}
+		}
+		
+		return isValid;
 	}
 	
 	
-	public void  main(String[] args) {
+	public static void main(String[] args) {
 		
 		//Array of Room
 		String[] facilities = new String[3];
@@ -148,7 +178,7 @@ public class test {
 		facilities[1] = "screen";
 		facilities[2] = "projector";
 		
-		Room[] rooms = new Room[2];
+		rooms = new Room[2];
 		rooms[0] = new Room(7606,100,facilities);
 		
 		String[] facilities2 = new String[1];
@@ -157,7 +187,7 @@ public class test {
 		rooms[1] = new Room(7609,80,facilities2);
 		
 		//Array of Lecture
-		Lecture[] lectures = new Lecture[2];
+		lectures = new Lecture[2];
 		
 		String[] require = new String[3];
 		require[0] = "board";
@@ -174,7 +204,7 @@ public class test {
 		
 		
 		//Array of Preference
-		Preference[] preferences = new Preference[1];
+		preferences = new Preference[1];
 		
 		TimeDetail[] jadwal = new TimeDetail[2];
 		jadwal[0] = new TimeDetail(1,8,10);
@@ -183,18 +213,18 @@ public class test {
 		preferences[0] = new Preference("IF4150", jadwal); 
 		
 		//Array of Contraint
-		Constraint[] constraints = new Constraint[2];
+		constraints = new Constraint[2];
 		
 		TimeDetail[] jadwal2 = new TimeDetail[2];
 		jadwal2[0] = new TimeDetail(1,7,11);
 		jadwal2[1] = new TimeDetail(3,14,18);
 		
-		constraints[0] = new Constraint("IF4150", jadwal2);
+		constraints[0] = new Constraint("Adi Mulyanto", jadwal2);
 		
 		TimeDetail[] jadwal3 = new TimeDetail[1];
 		jadwal3[0] = new TimeDetail(2,7,10);
 		
-		constraints[1]  = new Constraint("IF2450", jadwal3);
+		constraints[1]  = new Constraint("yudistira", jadwal3);
 		
 		//Start Scheduling
 		Schedule[] schedules = new Schedule[countAvailableLecture()];
@@ -212,12 +242,6 @@ public class test {
 			
 			schedules[i].setCourseName(classCode);
 			schedules[i].setLecturer(lecturerName);
-			
-			//Trace Room
-		      int startIndexRoom = -1;
-		      if (getRoomsIndex(capacity,required,startIndexRoom) != -1) {
-		    	  int index_room = getRoomsIndex(capacity,required,startIndexRoom);
-		      }
 					
 			//Trace Time
 		    TimeDetail[] time_preference;
@@ -232,23 +256,65 @@ public class test {
 			}
 			
 			//check constraint
-			if (getConstaintIndex(lecturerName) != -1) {
-				int index_constraint = getConstaintIndex(lecturerName);
+			if (getConstraintIndex(lecturerName) != -1) {
+				int index_constraint = getConstraintIndex(lecturerName);
 				time_constraint = new TimeDetail[constraints[index_constraint].getTimeDetail().length];
 				time_constraint = Arrays.copyOf(constraints[index_constraint].getTimeDetail(), constraints[index_constraint].getTimeDetail().length);
 			} else {
 				time_constraint = new TimeDetail[0];
 			}
 			
-			boolean foundSchedule = false;
-		    int i_cons = 0;
+//			//Trace Room
+//		    int startIndexRoom = -1;
+//		    if (getRoomsIndex(capacity,required,startIndexRoom) != -1) {
+//		    	int index_room = getRoomsIndex(capacity,required,startIndexRoom);
+//		    	startIndexRoom = index_room;
+//		    }
+			
+			int i_cons = 0;
 		    int i_pref = 0;
-		    i_pref = time_preference.length;
-			while (i_pref < time_preference.length) {
-		        while (i_cons < time_constraint.length) {
-		          TimeDetail time_intersec = getTimeIntersec(time_preference[0],time_constraint[0],duration);
-		        }
-		      }
+		    TimeDetail curr_time = new TimeDetail();
+		    int curr_room_idx;
+		    if (time_preference.length == 0) {
+		    	
+		    } else if (time_constraint.length == 0) {
+		    	
+		    } else {
+		    	boolean foundSchedule = false;
+		    	while (i_pref < time_preference.length && !foundSchedule) {
+		    		while (i_cons < time_constraint.length && !foundSchedule) {
+		    			TimeDetail time_intersec = getTimeIntersec(time_preference[i_pref],time_constraint[i_cons],duration);
+		    			if (time_intersec.getDay() == 0) {
+		    				i_cons++;
+		    			} else {
+		    				curr_time.setDay(time_intersec.getDay());
+		    				curr_time.setStartHour(time_intersec.getStartHour());
+		    				curr_time.setFinishHour(time_intersec.getStartHour()+duration);
+		    				while (curr_time.getFinishHour() <= time_intersec.getFinishHour() && !foundSchedule) {
+		    					//Trace Room
+			    			    int startIndexRoom = -1;
+			    			    
+			    			    while (startIndexRoom + 1 < rooms.length && !foundSchedule) {
+			    			    	if (getRoomsIndex(capacity,required,startIndexRoom) != -1) {
+			    			    		int index_room = getRoomsIndex(capacity,required,startIndexRoom);
+			    			    		startIndexRoom = index_room;
+			    			    		if (isValidSchedule(rooms[index_room].getRoomNo(), curr_time, i)) {
+			    			    			foundSchedule = true;
+			    			    		}
+				    			    } else {
+				    			    	startIndexRoom = rooms.length;
+				    			    }
+			    			    }
+		    				}
+		    			}
+			        }
+		    		
+		    		if (!foundSchedule) {
+		    			i_pref++;
+		    			i_cons = 0;
+		    		}
+			    }
+		    }
 			
 			
 		}

@@ -47,14 +47,12 @@ public class test {
 		}
 	}
 	
-	public int[] getRoomsIndex(int capacity, String[] required) {
+	public int getRoomsIndex(int capacity, String[] required, int startIdx) {
 		int i;
 		boolean found = false;
-		List<int> index_room = new ArrayList<int>();
-		int[] index_room = new int[0];
 		
-		if (rooms.length > 0) {
-			i = 0;
+		if (rooms.length > startIdx +1) {
+			i = startIdx + 1;
 			while (!found && (i < rooms.length)) {
 				if (capacity > rooms[i].getCapacity()) {
 					i++;
@@ -68,10 +66,9 @@ public class test {
 			}
 			
 			if (i == rooms.length) {
-				return index_room;
+				return -1;
 			} else {
-				Arrays.asList(index_room).push(Arrays.asList([1]));
-				return index_room;
+				return i;
 			}
 			
 		} else {
@@ -131,6 +128,15 @@ public class test {
 		}
 		
 		return time_intersec;
+	}
+	
+	public TimeDetail[] copyArrayOfTimeDetail(TimeDetail[] arrayInput) {
+		TimeDetail[] arrayOutput = new TimeDetail[arrayInput.length];
+		for (int i=0; i<arrayInput.length; i++) {
+			arrayOutput[i] = arrayInput[i];
+		}
+		
+		return arrayOutput;
 	}
 	
 	
@@ -208,26 +214,41 @@ public class test {
 			schedules[i].setLecturer(lecturerName);
 			
 			//Trace Room
-			if (getRoomIndex(capacity,required) != -1) {
-				int in
-			}
+		      int startIndexRoom = -1;
+		      if (getRoomsIndex(capacity,required,startIndexRoom) != -1) {
+		    	  int index_room = getRoomsIndex(capacity,required,startIndexRoom);
+		      }
 					
 			//Trace Time
+		    TimeDetail[] time_preference;
+		    TimeDetail[] time_constraint;
 			//check preferences
 			if (getPreferenceIndex(classCode) != -1) {
 				int index_preference = getPreferenceIndex(classCode);
-				TimeDetail[] time_preference = preferences[index_preference].getTimeDetail();	
+				time_preference = new TimeDetail[preferences[index_preference].getTimeDetail().length];
+				time_preference = Arrays.copyOf(preferences[index_preference].getTimeDetail(), preferences[index_preference].getTimeDetail().length);
 			} else {
-				TimeDetail[] time_preference = new TimeDetail[0];
+				time_preference = new TimeDetail[0];
 			}
 			
 			//check constraint
 			if (getConstaintIndex(lecturerName) != -1) {
 				int index_constraint = getConstaintIndex(lecturerName);
-				TimeDetail[] time_constraint = constraints[index_constraint].getTimeDetail();
+				time_constraint = new TimeDetail[constraints[index_constraint].getTimeDetail().length];
+				time_constraint = Arrays.copyOf(constraints[index_constraint].getTimeDetail(), constraints[index_constraint].getTimeDetail().length);
 			} else {
-				TimeDetail[] time_constraint = new TimeDetail[0];
+				time_constraint = new TimeDetail[0];
 			}
+			
+			boolean foundSchedule = false;
+		    int i_cons = 0;
+		    int i_pref = 0;
+		    i_pref = time_preference.length;
+			while (i_pref < time_preference.length) {
+		        while (i_cons < time_constraint.length) {
+		          TimeDetail time_intersec = getTimeIntersec(time_preference[0],time_constraint[0],duration);
+		        }
+		      }
 			
 			
 		}

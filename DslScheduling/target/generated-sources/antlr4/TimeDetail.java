@@ -42,5 +42,5 @@ public class TimeDetail {
 	public int getFinishHour() {
 		return this.finishHour;
 	}
-
+	
 }
